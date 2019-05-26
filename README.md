@@ -148,3 +148,53 @@ Note that this is easily visible if we set the `optimization` property in `angul
 
 With this setup everything works because pure annotations are not removed but we can not see them in the code!
 
+## WHY ???
+
+Without the decorator the output code looks like this:
+
+```js
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class MyButtonComponent extends PleaseExtendMe {
+  /* Class code for Ctor, methods and props. */
+}
+
+MyButtonComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'app-my-button',
+                template: "<p>\n  my-button works!\n</p>\n",
+                styles: [""]
+            }] }
+];
+/** @nocollapse */
+MyButtonComponent.ctorParameters = () => [];
+```
+
+But when we add the 3rd party decorator:
+
+```js
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+let MyButtonComponent = class MyButtonComponent extends PleaseExtendMe {
+/* Class code for Ctor, methods and props. */
+};
+MyButtonComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'app-my-button',
+                template: "<p>\n  my-button works!\n</p>\n",
+                styles: [""]
+            }] }
+];
+/** @nocollapse */
+MyButtonComponent.ctorParameters = () => [];
+MyButtonComponent = __decorate([
+    MyDecorator(),
+    __metadata("design:paramtypes", [])
+], MyButtonComponent);
+```
+
+The key is **probably** the use of the variable `MyButtonComponent` when decorator is used. Which messes up the build optimizer, I dont know why.
